@@ -14,6 +14,7 @@
   "type": "module",
   "main": "src/app.ts",
   "scripts": {
+    "dev": "node src/app.ts",
     "test": "test"
   },
   "dependencies": {

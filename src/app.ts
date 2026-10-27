@@ -6,4 +6,5 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');
 });
 
+console.log("Running server...")
 app.listen(3000);
