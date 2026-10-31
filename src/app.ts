@@ -1,16 +1,16 @@
-import express, { type Express, type Request, type Response } from 'express';
-import { openDb } from './db.ts';
+import express, { type Express, type Request, type Response } from "express";
+import { openDb } from "./db.ts";
+import cors from 'cors';
 
 interface Game {
-  id: string,
-  difficulty: string
+  id: string;
+  difficulty: string;
 }
 
 interface Player {
-  words: string[]
+  words: string[];
 }
 
-// todo: replace with a database
 let db = await openDb();
 
 db.exec(`
@@ -20,35 +20,44 @@ db.exec(`
   )
 `);
 
-let tempStorage = [];
-
 const app: Express = express();
 
-app.use(express.json());
+const corsOptions = {
+  origin: ["http://localhost:5173"],
+  optionsSuccessStatus: 200,
+};
 
-app.get('/', (req: Request, res: Response) => {
+app.use(express.json());
+app.use(cors(corsOptions));
+
+app.get("/", (req: Request, res: Response) => {
   // todo: grab info from database
   let game: Game = {
     id: "0",
-    difficulty: "normal"
-  }
+    difficulty: "normal",
+  };
 
   res.json(game);
 });
 
-app.post('/', async (req: Request, res: Response) => {
+app.post("/", async (req: Request, res: Response) => {
   // todo: send info to database
-  await db.run(`
+  await db.run(
+    `
     INSERT INTO game (difficulty)
     VALUES (?)
-  `, [req.body.difficulty]);
+  `,
+    [req.body.difficulty],
+  );
 
-  res.send('game registered!');
+  res.send("game registered!");
 
-  console.log(await db.all(
-    `select * 
-    from game`
-  ));
+  console.log(
+    await db.all(
+      `select * 
+    from game`,
+    ),
+  );
 });
 
 console.log("server running on port 3000");
